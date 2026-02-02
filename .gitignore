@@ -1,0 +1,24 @@
+# Large datasets
+arxiv-metadata-oai-snapshot.json
+arxiv_processed.jsonl
+
+# Embeddings and clustering outputs
+embeddings.npy
+cluster_labels.npy
+cluster_probabilities.npy
+sample_embeddings.txt.npy
+
+# Virtual environment
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+

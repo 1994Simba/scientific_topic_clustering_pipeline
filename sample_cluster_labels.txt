@@ -1,0 +1,4 @@
+# Mock cluster labels (normally stored in cluster_labels.npy)
+# One label per sample
+
+[3, 3, 7, 1, 7]
