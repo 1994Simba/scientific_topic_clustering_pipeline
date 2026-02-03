@@ -5,8 +5,14 @@
 
 ## 🧩 Abstract
 
-This repository implements a scalable, end‑to‑end pipeline for unsupervised scientific topic discovery using the arXiv metadata corpus. The system processes **2.16 million** scientific abstracts, generates dense semantic embeddings, reduces dimensionality using UMAP, clusters documents with HDBSCAN, and extracts interpretable topic labels using TF‑IDF with reverse hashing.  
-The project supports **demo mode** (instant, using included sample files) and **full mode** (processing the complete arXiv dataset). Large files are intentionally excluded from the repository to keep it lightweight and GitHub‑friendly.
+This repository implements a scalable, end‑to‑end pipeline for unsupervised scientific topic discovery using the arXiv metadata corpus. The system processes **2.16 million** scientific abstracts, generates dense semantic embeddings, reduces dimensionality using UMAP, clusters documents with HDBSCAN, and extracts interpretable topic labels using TF‑IDF with reverse hashing.
+
+The project supports:
+
+- **Demo mode** — instant, using included sample files  
+- **Full mode** — processing the complete arXiv dataset  
+
+Large files are intentionally excluded from the repository to keep it lightweight and GitHub‑friendly.
 
 ---
 
@@ -72,6 +78,17 @@ source .venv/bin/activate
 
 ---
 
+## ▶️ How to Run the Pipeline
+
+This project supports **two execution modes**:
+
+- **Demo Mode** — runs instantly using small sample files included in the repo  
+- **Full Mode** — processes the complete arXiv dataset (millions of records)
+
+Both modes use the same scripts.
+
+---
+
 ## 🟢 Demo Mode (Instant, No Large Files Needed)
 
 Demo mode uses the included sample files and runs in seconds.
@@ -88,7 +105,13 @@ python src/process_arxiv_stream.py --demo
 python src/build_embeddings.py --demo
 ```
 
-You can now open the notebook and run it in demo mode.
+### Run the notebook in demo mode
+
+Open:
+
+```
+notebooks/umap_dimensionality_reduction.ipynb
+```
 
 ---
 
@@ -107,13 +130,89 @@ arxiv-metadata-oai-snapshot.json
 python src/process_arxiv_stream.py
 ```
 
+This generates:
+
+```
+outputs/arxiv_processed.jsonl
+```
+
 ### 3. Generate full embeddings
 
 ```bash
 python src/build_embeddings.py
 ```
 
-You can now run the notebook in full mode.
+This generates:
+
+```
+outputs/embeddings.npy
+outputs/cluster_labels.npy
+outputs/cluster_probabilities.npy
+```
+
+### 4. Run the notebook in full mode
+
+Open:
+
+```
+notebooks/umap_dimensionality_reduction.ipynb
+```
+
+---
+
+## ▶️ Running the Python Scripts (Detailed)
+
+### 1. `process_arxiv_stream.py`
+
+#### Demo Mode
+
+```bash
+python src/process_arxiv_stream.py --demo
+```
+
+#### Full Mode
+
+```bash
+python src/process_arxiv_stream.py
+```
+
+#### Custom paths
+
+```bash
+python src/process_arxiv_stream.py --input data/custom.jsonl --output outputs/custom_processed.jsonl
+```
+
+---
+
+### 2. `build_embeddings.py`
+
+#### Demo Mode
+
+```bash
+python src/build_embeddings.py --demo
+```
+
+#### Full Mode
+
+```bash
+python src/build_embeddings.py
+```
+
+#### Custom paths
+
+```bash
+python src/build_embeddings.py --input outputs/custom_processed.jsonl --output outputs/custom_embeddings.npy
+```
+
+---
+
+### Script Arguments (Reference)
+
+```
+--demo        Run using sample files
+--input       Path to input JSONL file
+--output      Path to output file
+```
 
 ---
 
@@ -157,7 +256,7 @@ Supports both **demo** and **full** datasets.
 - TF‑IDF keyword extraction  
 - Reverse hashing vocabulary recovery  
 - Keyword search  
-- UMAP visualization with topic labels
+- UMAP visualization with topic labels  
 
 ---
 
