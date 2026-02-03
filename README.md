@@ -77,6 +77,56 @@ scientific_topic_clustering/
 
 ---
 
+# ▶️ Running the Full Python Pipeline
+
+Activate your virtual environment:
+
+```
+source .venv/bin/activate
+```
+
+Run each script in order:
+
+### 1. Download raw data
+```
+python src/00_download_data.py
+```
+
+### 2. Process and clean the dataset
+```
+python src/01_process_arxiv.py
+```
+
+This generates:
+```
+outputs/arxiv_processed.jsonl
+```
+
+### 3. Generate embeddings (large step)
+```
+python src/02_generate_embeddings.py
+```
+
+This generates:
+```
+outputs/embeddings.npy
+```
+
+### 4. Cluster embeddings
+```
+python src/03_cluster_embeddings.py
+```
+
+This generates:
+```
+outputs/cluster_labels.npy
+outputs/cluster_probabilities.npy
+```
+
+Once these files exist, the notebook can run in **full mode**.
+
+---
+
 # 🚦 Demo Mode vs Full Mode
 
 The notebook supports two execution modes, controlled by a single configuration variable:
@@ -113,20 +163,10 @@ Full mode is optional and only needed for large‑scale experiments.
 The notebook `01_umap_dimensionality_reduction.ipynb` follows a clear, reproducible workflow:
 
 1. **Load Metadata**  
-   Reads the JSONL metadata file based on the selected mode.
-
 2. **Load Embeddings and Cluster Labels**  
-   - Demo mode loads small text files  
-   - Full mode loads `.npy` arrays  
-
-3. **Dimensionality Reduction with UMAP**  
-   Projects high‑dimensional embeddings into 2D space.
-
-4. **Visualization**  
-   Generates scatter plots showing topic clusters.
-
-5. **Cluster Exploration**  
-   Displays sample abstracts from selected clusters to understand topic coherence.
+3. **UMAP Dimensionality Reduction**  
+4. **Visualization of Clusters**  
+5. **Cluster Exploration**
 
 This workflow allows users to explore clustering results without rerunning the full pipeline.
 
@@ -192,5 +232,3 @@ jupyter nbconvert --ClearOutputPreprocessor.enabled=True --inplace notebooks/01_
 - The notebook has been validated structurally and executed successfully in demo mode.  
 - The folder structure follows industry best practices for ML and data science projects.  
 - The pipeline is modular, scalable, and ready for extension.
-
-
