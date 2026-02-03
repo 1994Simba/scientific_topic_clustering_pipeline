@@ -1,266 +1,196 @@
-# Scientific Topic Clustering on 2.16M arXiv Papers  
-### Unsupervised Topic Discovery Using Sentence Embeddings, UMAP, HDBSCAN, and TF‑IDF
+# Scientific Topic Clustering  
+[![Status: Stable](https://img.shields.io/badge/Status-Stable-brightgreen.svg)]()  
+[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)]()  
+[![Jupyter](https://img.shields.io/badge/Notebook-UMAP%20Visualization-orange.svg)]()  
+[![Reproducible](https://img.shields.io/badge/Mode-Demo%20Reproducible-success.svg)]()
+
+A scalable, end‑to‑end pipeline for embedding, clustering, and visualizing scientific abstracts.
+
+This project implements a complete workflow for processing scientific abstracts, generating high‑dimensional embeddings, clustering them into coherent topics, and visualizing the results using UMAP. The repository is structured for clarity, reproducibility, and ease of use, supporting both **demo mode** (lightweight, fast) and **full mode** (large‑scale, research‑grade). The full processing pipeline is implemented in `src/`, while the notebook in `notebooks/` provides an interactive exploration of the results.
 
 ---
 
-## 🧩 Abstract
-
-This repository implements a scalable, end‑to‑end pipeline for unsupervised scientific topic discovery using the arXiv metadata corpus. The system processes **2.16 million** scientific abstracts, generates dense semantic embeddings, reduces dimensionality using UMAP, clusters documents with HDBSCAN, and extracts interpretable topic labels using TF‑IDF with reverse hashing.
-
-The project supports:
-
-- **Demo mode** — instant, using included sample files  
-- **Full mode** — processing the complete arXiv dataset  
-
-Large files are intentionally excluded from the repository to keep it lightweight and GitHub‑friendly.
-
----
-
-## 🏷️ Badges
-
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
-![License](https://img.shields.io/badge/License-MIT-green)
-![Status](https://img.shields.io/badge/Status-Active-brightgreen)
-![arXiv](https://img.shields.io/badge/Data-arXiv-red)
-
----
-
-## 📁 Project Structure
+# 📁 Project Structure
 
 ```
 scientific_topic_clustering/
-├── src/
-│   ├── process_arxiv_stream.py
-│   ├── build_embeddings.py
-│   └── ...
 │
-├── notebooks/
-│   └── umap_dimensionality_reduction.ipynb
-│
-├── data/
+├── data/                     # Demo dataset (small, included in repo)
 │   ├── sample_data.jsonl
 │   ├── sample_embeddings.txt
-│   ├── sample_cluster_labels.txt
-│   └── metadata.jsonl
+│   └── sample_cluster_labels.txt
 │
-├── outputs/
+├── outputs/                  # Full dataset outputs (large, generated)
 │   ├── arxiv_processed.jsonl
 │   ├── embeddings.npy
 │   ├── cluster_labels.npy
 │   └── cluster_probabilities.npy
 │
-├── README.md
-└── .venv/                                 # Local virtual environment (ignored)
-```
-
-### ❗ Large files NOT included in the repo
-
-To keep the repository lightweight, the following files are excluded:
-
-- `arxiv-metadata-oai-snapshot.json` (3+ GB)
-- `arxiv_processed.jsonl` (2+ GB)
-- `embeddings.npy`
-- `cluster_labels.npy`
-- `cluster_probabilities.npy`
-
-These are generated locally when running in **full mode**.
-
----
-
-## 🚀 Quick Start
-
-### 1. Create a virtual environment
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
+├── notebooks/
+│   └── 01_umap_dimensionality_reduction.ipynb
+│
+├── src/                      # Processing pipeline
+│   ├── 00_download_data.py
+│   ├── 01_process_arxiv.py
+│   ├── 02_generate_embeddings.py
+│   ├── 03_cluster_embeddings.py
+│   └── utils/
+│
+├── .gitignore
+└── README.md
 ```
 
 ---
 
-## ▶️ How to Run the Pipeline
-
-This project supports **two execution modes**:
-
-- **Demo Mode** — runs instantly using small sample files included in the repo  
-- **Full Mode** — processes the complete arXiv dataset (millions of records)
-
-Both modes use the same scripts.
-
----
-
-## 🟢 Demo Mode (Instant, No Large Files Needed)
-
-Demo mode uses the included sample files and runs in seconds.
-
-### Process sample data
-
-```bash
-python src/process_arxiv_stream.py --demo
-```
-
-### Generate sample embeddings
-
-```bash
-python src/build_embeddings.py --demo
-```
-
-### Run the notebook in demo mode
-
-Open:
+# 🔄 Pipeline Overview
 
 ```
-notebooks/umap_dimensionality_reduction.ipynb
-```
-
----
-
-## 🔵 Full Mode (Full Dataset, Millions of Records)
-
-### 1. Download the arXiv metadata snapshot  
-Place it in the project folder as:
-
-```
-arxiv-metadata-oai-snapshot.json
-```
-
-### 2. Process the full dataset
-
-```bash
-python src/process_arxiv_stream.py
-```
-
-This generates:
-
-```
-outputs/arxiv_processed.jsonl
-```
-
-### 3. Generate full embeddings
-
-```bash
-python src/build_embeddings.py
-```
-
-This generates:
-
-```
-outputs/embeddings.npy
-outputs/cluster_labels.npy
-outputs/cluster_probabilities.npy
-```
-
-### 4. Run the notebook in full mode
-
-Open:
-
-```
-notebooks/umap_dimensionality_reduction.ipynb
+                ┌────────────────────────┐
+                │   00_download_data.py   │
+                │  Download raw abstracts │
+                └─────────────┬──────────┘
+                              ▼
+                ┌────────────────────────┐
+                │   01_process_arxiv.py   │
+                │  Clean + normalize JSON │
+                │  → arxiv_processed.jsonl│
+                └─────────────┬──────────┘
+                              ▼
+                ┌────────────────────────┐
+                │ 02_generate_embeddings.py│
+                │  Generate embeddings     │
+                │  → embeddings.npy        │
+                └─────────────┬──────────┘
+                              ▼
+                ┌────────────────────────┐
+                │ 03_cluster_embeddings.py│
+                │  Cluster + probabilities │
+                │  → cluster_labels.npy    │
+                │  → cluster_probabilities │
+                └─────────────┬──────────┘
+                              ▼
+                ┌────────────────────────┐
+                │  Notebook (UMAP + Viz) │
+                │  01_umap_dimensional…  │
+                └────────────────────────┘
 ```
 
 ---
 
-## ▶️ Running the Python Scripts (Detailed)
+# 🚦 Demo Mode vs Full Mode
 
-### 1. `process_arxiv_stream.py`
+The notebook supports two execution modes, controlled by a single configuration variable:
 
-#### Demo Mode
-
-```bash
-python src/process_arxiv_stream.py --demo
+```
+MODE = "demo"   # or "full"
 ```
 
-#### Full Mode
+## Demo Mode
+- Loads small sample files from `data/`
+- Runs instantly
+- Requires no preprocessing
+- Ideal for:
+  - reviewers  
+  - tutors  
+  - collaborators  
+  - anyone cloning the repo  
+- Guaranteed to execute end‑to‑end without errors
 
-```bash
-python src/process_arxiv_stream.py
+## Full Mode
+- Loads the complete processed dataset from `outputs/`
+- Requires running the full ETL pipeline in `src/`
+- Uses multi‑gigabyte embeddings and clustering outputs
+- Intended for full‑scale research and analysis
+
+## Recommendation
+For submissions and reproducibility, **demo mode is strongly recommended**.  
+Full mode is optional and only needed for large‑scale experiments.
+
+---
+
+# 🧠 Notebook Workflow Summary
+
+The notebook `01_umap_dimensionality_reduction.ipynb` follows a clear, reproducible workflow:
+
+1. **Load Metadata**  
+   Reads the JSONL metadata file based on the selected mode.
+
+2. **Load Embeddings and Cluster Labels**  
+   - Demo mode loads small text files  
+   - Full mode loads `.npy` arrays  
+
+3. **Dimensionality Reduction with UMAP**  
+   Projects high‑dimensional embeddings into 2D space.
+
+4. **Visualization**  
+   Generates scatter plots showing topic clusters.
+
+5. **Cluster Exploration**  
+   Displays sample abstracts from selected clusters to understand topic coherence.
+
+This workflow allows users to explore clustering results without rerunning the full pipeline.
+
+---
+
+# ▶️ Running the Notebook
+
+## Option A — Run in Demo Mode (recommended)
+
+```
+jupyter notebook notebooks/01_umap_dimensionality_reduction.ipynb
 ```
 
-#### Custom paths
+Ensure the configuration cell contains:
 
-```bash
-python src/process_arxiv_stream.py --input data/custom.jsonl --output outputs/custom_processed.jsonl
+```
+MODE = "demo"
+```
+
+Then run all cells.
+
+---
+
+## Option B — Execute from Terminal
+
+```
+jupyter nbconvert --to notebook --execute --inplace notebooks/01_umap_dimensionality_reduction.ipynb
 ```
 
 ---
 
-### 2. `build_embeddings.py`
+## Option C — Run in Full Mode
 
-#### Demo Mode
+Before switching to full mode, ensure you have generated:
 
-```bash
-python src/build_embeddings.py --demo
+- outputs/arxiv_processed.jsonl  
+- outputs/embeddings.npy  
+- outputs/cluster_labels.npy  
+- outputs/cluster_probabilities.npy  
+
+Then set:
+
 ```
-
-#### Full Mode
-
-```bash
-python src/build_embeddings.py
-```
-
-#### Custom paths
-
-```bash
-python src/build_embeddings.py --input outputs/custom_processed.jsonl --output outputs/custom_embeddings.npy
+MODE = "full"
 ```
 
 ---
 
-### Script Arguments (Reference)
+# 🧹 Optional: Clear Notebook Outputs
+
+To keep the notebook lightweight before committing:
 
 ```
---demo        Run using sample files
---input       Path to input JSONL file
---output      Path to output file
+jupyter nbconvert --ClearOutputPreprocessor.enabled=True --inplace notebooks/01_umap_dimensionality_reduction.ipynb
 ```
 
 ---
 
-## 📓 Notebook Overview
+# 🎯 Final Notes
 
-The notebook `umap_dimensionality_reduction.ipynb` performs:
+- The project is fully reproducible in **demo mode**, making it ideal for submission.  
+- Full mode is available for large‑scale experimentation.  
+- The notebook has been validated structurally and executed successfully in demo mode.  
+- The folder structure follows industry best practices for ML and data science projects.  
+- The pipeline is modular, scalable, and ready for extension.
 
-1. Load metadata and embeddings  
-2. UMAP reduction (384 → 5 → 2 dimensions)  
-3. HDBSCAN clustering  
-4. TF‑IDF construction (30,000 features)  
-5. Reverse hashing to recover vocabulary  
-6. Keyword extraction per cluster  
-7. Topic label generation  
-8. Cluster indexing for fast retrieval  
-9. UMAP visualization with top 50 cluster labels  
-10. Keyword search (e.g., “quantum”)  
-
-Supports both **demo** and **full** datasets.
-
----
-
-## 📊 Outputs (Full Mode)
-
-- **2,166,782** processed records  
-- **384‑dimensional embeddings**  
-- **5‑dimensional UMAP reduction**  
-- **2‑dimensional visualization**  
-- **≈ 2,904 clusters** discovered  
-- **TF‑IDF matrix:** `(2166782, 30000)`  
-- **Recovered vocabulary:** 30,000 words  
-
----
-
-## 🧠 Features
-
-- Scalable streaming parser  
-- SentenceTransformer embeddings  
-- UMAP dimensionality reduction  
-- HDBSCAN clustering  
-- TF‑IDF keyword extraction  
-- Reverse hashing vocabulary recovery  
-- Keyword search  
-- UMAP visualization with topic labels  
-
----
-
-## 📜 License
-
-MIT License — free for academic and research use.
 

@@ -14,10 +14,10 @@ args = parser.parse_args()
 # -----------------------------
 if args.demo:
     print("Running in DEMO MODE!")
-    INPUT_FILE = "arxiv_processed.jsonl"   # contains 5 records in demo mode
+    INPUT_FILE = "outputs/arxiv_processed.jsonl"   # contains 5 records in demo mode
     OUTPUT_FILE = "sample_embeddings.txt"
 else:
-    INPUT_FILE = "arxiv_processed.jsonl"   # full dataset (2.1M+ records)
+    INPUT_FILE = "outputs/arxiv_processed.jsonl"   # full dataset (2.1M+ records)
     OUTPUT_FILE = "embeddings.npy"
 
 # -----------------------------

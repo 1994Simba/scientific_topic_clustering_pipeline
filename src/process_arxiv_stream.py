@@ -12,7 +12,7 @@ args = parser.parse_args()
 # -----------------------------
 if args.demo:
     print("Running in DEMO MODE!")
-    INPUT_FILE = "sample_data.jsonl"
+    INPUT_FILE = "data/sample_data.jsonl"
     OUTPUT_FILE = "arxiv_processed.jsonl"
     MIN_YEAR = 0   # keep all demo records
 else:
