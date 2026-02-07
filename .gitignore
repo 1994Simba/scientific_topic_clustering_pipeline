@@ -1,3 +1,4 @@
+
 # Virtual environments
 .venv/
 venv/
@@ -6,21 +7,22 @@ venv/
 __pycache__/
 *.pyc
 
-# Notebook checkpoints
+# Notebook checkpoints (any folder)
 **/.ipynb_checkpoints/
 
 # OS files
 .DS_Store
+Thumbs.db
 
 # Raw dataset (too large for GitHub)
 raw/
 arxiv-metadata-oai-snapshot.json
 
-# Full-mode processed dataset
+# Full-mode processed dataset and outputs
 outputs/
 arxiv_processed.jsonl
 
-# Large numerical files
+# Large numerical files (ignored globally)
 *.npy
 *.npz
 *.jsonl
@@ -30,29 +32,15 @@ arxiv_processed.jsonl
 !data/sample_embeddings.txt.npy
 !data/sample_cluster_labels.txt
 !data/metadata.jsonl
- Large datasets
-arxiv-metadata-oai-snapshot.json
-arxiv_processed.jsonl
 
-# Embeddings and clustering outputs
-embeddings.npy
-cluster_labels.npy
-cluster_probabilities.npy
-sample_embeddings.txt.npy
+# Allow all source code
+!src/*.py
 
-# Virtual environment
-.venv/
-venv/
+# Allow notebooks
+!notebooks/*.ipynb
 
-# Python cache
-__pycache__/
-*.pyc
+# Allow README and config files
+!README.md
+!.gitignore
+!requirements.txt
 
-# Notebook checkpoints
-.ipynb_checkpoints/
-
-# OS files
-.DS_Store
-
-arxiv_processed.jsonl
-raw/
