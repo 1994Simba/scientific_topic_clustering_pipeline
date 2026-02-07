@@ -1,234 +1,289 @@
-# Scientific Topic Clustering  
-[![Status: Stable](https://img.shields.io/badge/Status-Stable-brightgreen.svg)]()  
-[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)]()  
-[![Jupyter](https://img.shields.io/badge/Notebook-UMAP%20Visualization-orange.svg)]()  
-[![Reproducible](https://img.shields.io/badge/Mode-Demo%20Reproducible-success.svg)]()
+#  🧠 Scientific Topic Clustering  
+### *Mapping the Landscape of Modern Science Using Unsupervised Learning*
 
-A scalable, end‑to‑end pipeline for embedding, clustering, and visualizing scientific abstracts.
-
-This project implements a complete workflow for processing scientific abstracts, generating high‑dimensional embeddings, clustering them into coherent topics, and visualizing the results using UMAP. The repository is structured for clarity, reproducibility, and ease of use, supporting both **demo mode** (lightweight, fast) and **full mode** (large‑scale, research‑grade). The full processing pipeline is implemented in `src/`, while the notebook in `notebooks/` provides an interactive exploration of the results.
+![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Status](https://img.shields.io/badge/Status-Active-brightgreen.svg)
+![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey.svg)
 
 ---
 
-# 📁 Project Structure
+## 📌 Overview
 
-```
-scientific_topic_clustering/
-│
-├── data/                     # Demo dataset (small, included in repo)
-│   ├── sample_data.jsonl
-│   ├── sample_embeddings.txt
-│   └── sample_cluster_labels.txt
-│
-├── outputs/                  # Full dataset outputs (large, generated)
-│   ├── arxiv_processed.jsonl
-│   ├── embeddings.npy
-│   ├── cluster_labels.npy
-│   └── cluster_probabilities.npy
-│
-├── notebooks/
-│   └── 01_umap_dimensionality_reduction.ipynb
-│
-├── src/                      # Processing pipeline
-│   ├── 00_download_data.py
-│   ├── 01_process_arxiv.py
-│   ├── 02_generate_embeddings.py
-│   ├── 03_cluster_embeddings.py
-│   └── utils/
-│
-├── .gitignore
-└── README.md
-```
+This project performs **large‑scale topic clustering** on scientific articles using:
+
+- Transformer embeddings  
+- UMAP dimensionality reduction  
+- HDBSCAN clustering  
+- Keyword extraction  
+- Visualization and topic interpretation  
+
+It supports **two execution modes**:
+
+- **FULL MODE** → uses the complete arXiv dataset (millions of papers)  
+- **DEMO MODE** → uses a tiny sample dataset suitable for GitHub and quick execution  
+
+The project was developed as part of the IU case study *“Categorizing Trends in Science”*.
 
 ---
 
-# 🔄 Pipeline Overview
+## 🔧 Pipeline Diagram (Horizontal)
+```bash
+    Raw Data (arXiv JSON)
+            │
+            ▼
+    process_arxiv_stream.py
+            │
+            ▼
+    Cleaned Metadata (JSONL)
+            │
+            ▼
+    build_embeddings.py
+            │
+            ▼
+    High‑Dim Embeddings (NumPy)
+            │
+            ▼
+    umap_clustering.py
+            │
+            ▼
+    UMAP 2D Embeddings + Cluster Labels
+            │
+            ▼
+    notebooks/analysis_and_visualization.ipynb
+            │
+            ▼
+    Topic Interpretation & Trend Analysis
+```
+---
+
+## 📁 Project Structure
+```bash
+    scientific_topic_clustering/
+    │
+    ├── README.md
+    ├── .gitignore
+    ├── requirements.txt
+    │
+    ├── notebooks/
+    │   └── analysis_and_visualization.ipynb
+    │
+    ├── src/
+    │   ├── process_arxiv_stream.py
+    │   ├── build_embeddings.py
+    │   └── umap_clustering.py
+    │
+    ├── data/
+    │   ├── sample_data.jsonl
+    │   ├── sample_embeddings.txt.npy
+    │   ├── sample_cluster_labels.txt
+    │   └── metadata.jsonl
+    │
+    ├── outputs/
+    │   ├── embeddings.npy
+    │   ├── umap_embeddings.npy
+    │   ├── cluster_labels.npy
+    │   ├── cluster_probabilities.npy
+    │   └── arxiv_processed.jsonl
+    │
+    ├── raw/
+    │   └── arxiv-metadata-oai-snapshot.json
+    │
+    └── .venv/
+```
+---
+
+## 🚀 Installation
+
+### 1. Clone the repository
+```bash
+    git clone https://github.com/yourusername/scientific_topic_clustering.git
+    cd scientific_topic_clustering
+```
+### 2. Create a virtual environment
+```bash
+    python3 -m venv .venv
+    source .venv/bin/activate        # macOS/Linux
+    .venv\Scripts\activate           # Windows
+```
+### 3. Install dependencies
+```bash
+    pip install -r requirements.txt
+```
+---
+
+## 🧪 Running the Pipeline (FULL MODE)
+
+FULL MODE processes the **entire arXiv dataset** (millions of papers).  
+This mode is **local only** because the dataset is extremely large.
+
+## 📥 How to Download the Raw Dataset
+
+Download the official arXiv metadata snapshot from Kaggle:
 
 ```
-                ┌────────────────────────┐
-                │   00_download_data.py   │
-                │  Download raw abstracts │
-                └─────────────┬──────────┘
-                              ▼
-                ┌────────────────────────┐
-                │   01_process_arxiv.py   │
-                │  Clean + normalize JSON │
-                │  → arxiv_processed.jsonl│
-                └─────────────┬──────────┘
-                              ▼
-                ┌────────────────────────┐
-                │ 02_generate_embeddings.py│
-                │  Generate embeddings     │
-                │  → embeddings.npy        │
-                └─────────────┬──────────┘
-                              ▼
-                ┌────────────────────────┐
-                │ 03_cluster_embeddings.py│
-                │  Cluster + probabilities │
-                │  → cluster_labels.npy    │
-                │  → cluster_probabilities │
-                └─────────────┬──────────┘
-                              ▼
-                ┌────────────────────────┐
-                │  Notebook (UMAP + Viz) │
-                │  01_umap_dimensional…  │
-                └────────────────────────┘
+https://www.kaggle.com/datasets/Cornell-University/arxiv
 ```
+
+Place the file here:
+
+```
+raw/arxiv-metadata-oai-snapshot.json
+```
+
+### Step 1 — Process raw JSON
+```bash
+    python src/process_arxiv_stream.py \
+        --input raw/arxiv-metadata-oai-snapshot.json \
+        --output outputs/arxiv_processed.jsonl
+```
+### Step 2 — Build embeddings
+```bash
+    python src/build_embeddings.py \
+        --input outputs/arxiv_processed.jsonl \
+        --output outputs/embeddings.npy
+```
+### Step 3 — Run UMAP + HDBSCAN
+```bash
+    python src/umap_clustering.py \
+        --embeddings outputs/embeddings.npy \
+        --output_dir outputs/
+```
+### Step 4 — Open the notebook
+```bash
+    jupyter notebook notebooks/analysis_and_visualization.ipynb
+```
+Inside the notebook:
+```bash
+    MODE = "FULL"
+```
+---
+
+## 🧪 Running the Pipeline (DEMO MODE)
+
+DEMO MODE uses **tiny sample files** stored in `data/`.  
+It is designed for:
+
+- GitHub  
+- Tutors  
+- Quick execution  
+- Demonstration of the workflow  
+
+### Why DEMO MODE exists
+
+- The full dataset is **4.7 GB** (raw) + **3.1 GB embeddings** + **UMAP outputs**  
+- GitHub has a **100 MB file limit**  
+- Uploading the full dataset would violate GitHub policies  
+- FULL MODE requires **hours** and **high RAM**  
+- DEMO MODE ensures **anyone can run the notebook instantly**
+
+### How to run DEMO MODE
+```bash
+    jupyter notebook notebooks/analysis_and_visualization.ipynb
+```
+Inside the notebook:
+```bash
+    MODE = "DEMO"
+```
+This loads:
+
+- data/sample_data.jsonl  
+- data/sample_embeddings.txt.npy  
+- data/sample_cluster_labels.txt  
+
+No large files are needed.
 
 ---
 
-# ▶️ Running the Full Python Pipeline
+## ❗ Why the Full Dataset Is NOT Pushed to GitHub
 
-Activate your virtual environment:
+### 1. GitHub file size limits  
+GitHub rejects files larger than **100 MB**.
 
-```
-source .venv/bin/activate
-```
+### 2. Dataset size  
+- Raw dataset: **4.7 GB**  
+- Embeddings: **3.1 GB**  
+- UMAP outputs: hundreds of MB  
 
-Run each script in order:
+### 3. Legal considerations  
+arXiv data is public but not intended for redistribution inside repositories.
 
-### 1. Download raw data
-```
-python src/00_download_data.py
-```
+### 4. Performance  
+FULL MODE requires:  
+- High RAM  
+- Long processing time  
+- GPU acceleration  
 
-### 2. Process and clean the dataset
-```
-python src/01_process_arxiv.py
-```
-
-This generates:
-```
-outputs/arxiv_processed.jsonl
-```
-
-### 3. Generate embeddings (large step)
-```
-python src/02_generate_embeddings.py
-```
-
-This generates:
-```
-outputs/embeddings.npy
-```
-
-### 4. Cluster embeddings
-```
-python src/03_cluster_embeddings.py
-```
-
-This generates:
-```
-outputs/cluster_labels.npy
-outputs/cluster_probabilities.npy
-```
-
-Once these files exist, the notebook can run in **full mode**.
+### 5. Reproducibility  
+DEMO MODE ensures:  
+- Fast execution  
+- No heavy compute  
+- Tutor-friendly evaluation  
 
 ---
 
-# 🚦 Demo Mode vs Full Mode
+## 📊 Notebook Overview
 
-The notebook supports two execution modes, controlled by a single configuration variable:
+The notebook performs:
 
-```
-MODE = "demo"   # or "full"
-```
-
-## Demo Mode
-- Loads small sample files from `data/`
-- Runs instantly
-- Requires no preprocessing
-- Ideal for:
-  - reviewers  
-  - tutors  
-  - collaborators  
-  - anyone cloning the repo  
-- Guaranteed to execute end‑to‑end without errors
-
-## Full Mode
-- Loads the complete processed dataset from `outputs/`
-- Requires running the full ETL pipeline in `src/`
-- Uses multi‑gigabyte embeddings and clustering outputs
-- Intended for full‑scale research and analysis
-
-## Recommendation
-For submissions and reproducibility, **demo mode is strongly recommended**.  
-Full mode is optional and only needed for large‑scale experiments.
+- Data exploration  
+- UMAP visualization  
+- Cluster size analysis  
+- Keyword extraction  
+- Topic interpretation  
+- Trend analysis  
+- Strategic recommendations  
 
 ---
 
-# 🧠 Notebook Workflow Summary
+## 🧩 Modes Summary
+```bash
+| Mode | Purpose | Data Size | GitHub Compatible | Notebook Setting |
+|------|----------|-----------|-------------------|------------------|
+| FULL | Real analysis | Millions of papers | ❌ No | MODE = "FULL" |
+| DEMO | Demonstration | ~200 samples | ✔ Yes | MODE = "DEMO" |
+```
+---
 
-The notebook `01_umap_dimensionality_reduction.ipynb` follows a clear, reproducible workflow:
+## 📝 License
 
-1. **Load Metadata**  
-2. **Load Embeddings and Cluster Labels**  
-3. **UMAP Dimensionality Reduction**  
-4. **Visualization of Clusters**  
-5. **Cluster Exploration**
-
-This workflow allows users to explore clustering results without rerunning the full pipeline.
+MIT License — free to use, modify, and distribute.
 
 ---
 
-# ▶️ Running the Notebook
+## 🙌 Acknowledgements
 
-## Option A — Run in Demo Mode (recommended)
-
-```
-jupyter notebook notebooks/01_umap_dimensionality_reduction.ipynb
-```
-
-Ensure the configuration cell contains:
-
-```
-MODE = "demo"
-```
-
-Then run all cells.
+- arXiv dataset  
+- UMAP authors  
+- HDBSCAN authors  
+- HuggingFace Transformers  
 
 ---
 
-## Option B — Execute from Terminal
+## 📘 Appendix: Project Diagram (For Case Study Report)
 
-```
-jupyter nbconvert --to notebook --execute --inplace notebooks/01_umap_dimensionality_reduction.ipynb
-```
-
----
-
-## Option C — Run in Full Mode
-
-Before switching to full mode, ensure you have generated:
-
-- outputs/arxiv_processed.jsonl  
-- outputs/embeddings.npy  
-- outputs/cluster_labels.npy  
-- outputs/cluster_probabilities.npy  
-
-Then set:
-
-```
-MODE = "full"
-```
-
----
-
-# 🧹 Optional: Clear Notebook Outputs
-
-To keep the notebook lightweight before committing:
-
-```
-jupyter nbconvert --ClearOutputPreprocessor.enabled=True --inplace notebooks/01_umap_dimensionality_reduction.ipynb
-```
-
----
-
-# 🎯 Final Notes
-
-- The project is fully reproducible in **demo mode**, making it ideal for submission.  
-- Full mode is available for large‑scale experimentation.  
-- The notebook has been validated structurally and executed successfully in demo mode.  
-- The folder structure follows industry best practices for ML and data science projects.  
-- The pipeline is modular, scalable, and ready for extension.
+    Raw arXiv Metadata (JSON)
+            │
+            ▼
+    process_arxiv_stream.py
+            │
+            ▼
+    Cleaned Metadata (JSONL)
+            │
+            ▼
+    build_embeddings.py
+            │
+            ▼
+    High-Dimensional Embeddings
+            │
+            ▼
+    umap_clustering.py
+            │
+            ▼
+    UMAP 2D Embeddings + Cluster Labels
+            │
+            ▼
+    analysis_and_visualization.ipynb
+            │
+            ▼
+    Topic Interpretation & Trend Analysis

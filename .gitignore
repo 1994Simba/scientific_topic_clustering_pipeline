@@ -1,4 +1,36 @@
-# Large datasets
+# Virtual environments
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Notebook checkpoints
+**/.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+
+# Raw dataset (too large for GitHub)
+raw/
+arxiv-metadata-oai-snapshot.json
+
+# Full-mode processed dataset
+outputs/
+arxiv_processed.jsonl
+
+# Large numerical files
+*.npy
+*.npz
+*.jsonl
+
+# Allow sample data files (override ignore)
+!data/sample_data.jsonl
+!data/sample_embeddings.txt.npy
+!data/sample_cluster_labels.txt
+!data/metadata.jsonl
+ Large datasets
 arxiv-metadata-oai-snapshot.json
 arxiv_processed.jsonl
 
