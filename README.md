@@ -97,7 +97,7 @@ The project was developed as part of the IU case study *“Categorizing Trends i
 
 ### 1. Clone the repository
 ```bash
-    git clone https://github.com/yourusername/scientific_topic_clustering.git
+    git clone https://github.com/1994Simba/scientific_topic_clustering.git
     cd scientific_topic_clustering
 ```
 ### 2. Create a virtual environment
